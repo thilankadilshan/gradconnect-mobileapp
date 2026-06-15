@@ -2,7 +2,6 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
-// 1. Tell the app how to behave if a notification arrives while the user is actively using the app
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -11,11 +10,9 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// 2. The main function to get permissions and the token
 export async function registerForPushNotificationsAsync() {
   let token;
 
-  // Android requires a "channel" to be set up first
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
       name: "default",
@@ -25,27 +22,28 @@ export async function registerForPushNotificationsAsync() {
     });
   }
 
-  // Push notifications only work on physical devices, not computer simulators
   if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
-    // If we don't have permission yet, ask the user with the native OS popup
     if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
 
-    // If they click "Deny", stop here
     if (finalStatus !== "granted") {
       console.log("User denied push notification permissions!");
       return null;
     }
 
-    // If they click "Allow", generate the unique Expo Push Token for this specific phone
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log("SUCCESS! EXPO PUSH TOKEN:", token);
+    try {
+      // THE FIX: Grabbing the raw Firebase/APNs token instead of the Expo wrapper
+      token = (await Notifications.getDevicePushTokenAsync()).data;
+      console.log("SUCCESS! NATIVE DEVICE PUSH TOKEN:", token);
+    } catch (e) {
+      console.error("Error generating Native push token:", e);
+    }
   } else {
     console.log("Must use a physical device for Push Notifications");
   }
@@ -53,23 +51,47 @@ export async function registerForPushNotificationsAsync() {
   return token;
 }
 
-// 3. The bridge to your Node.js backend (You will update this tomorrow)
-export async function sendTokenToBackend(userId, pushToken) {
+// THE LIVE API CALL TO YOUR BACKEND
+export async function sendTokenToBackend(userId, pushToken, jwtToken) {
   try {
-    console.log(
-      `Pretending to send token ${pushToken} to backend for user ${userId}...`,
-    );
-    /* TOMORROW: Uncomment and use this fetch call when the backend dev gives you the endpoint.
-    
-    await fetch('https://api.gradconnect.world/v1/users/push-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Add your standard auth headers here (e.g., Bearer token)
-      },
-      body: JSON.stringify({ pushToken: pushToken }),
+    console.log(`Sending live token to backend API for user: ${userId}...`);
+
+    const API_URL = "https://gradconnect.world/api/notifications/token";
+
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (jwtToken) {
+      headers["Authorization"] = `Bearer ${jwtToken}`;
+    }
+
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        userId: userId,
+        token: pushToken,
+        deviceType: Platform.OS === "ios" ? "ios" : "android",
+      }),
     });
-    */
+
+    const contentType = response.headers.get("content-type");
+    let data;
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      data = await response.json();
+    } else {
+      data = await response.text();
+    }
+
+    if (!response.ok) {
+      console.error(
+        `Backend rejected the token (Status: ${response.status}):`,
+        data,
+      );
+    } else {
+      console.log("Token successfully saved to database!", data);
+    }
   } catch (error) {
     console.error("Failed to send token to backend", error);
   }

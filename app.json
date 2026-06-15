@@ -4,32 +4,46 @@
     "slug": "gradconnect-mobile-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
     "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": false,
       "bundleIdentifier": "com.gradconnect.app",
-      "googleServicesFile": "./GoogleService-Info.plist",
+      "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": [
-          "remote-notification",
-          "remote-notification"
-        ],
-        "ITSAppUsesNonExemptEncryption": false
+        "UIBackgroundModes": ["remote-notification"],
+        "NSCameraUsageDescription": "GradConnect needs camera access so you can take and upload photos directly to your profile.",
+        "NSMicrophoneUsageDescription": "GradConnect needs microphone access so you can securely record and send voice notes.",
+        "NSPhotoLibraryUsageDescription": "GradConnect needs access to your photo library so you can select and upload existing images."
       }
     },
     "android": {
-      "package": "com.gradconnect.app"
+      "package": "com.gradconnect.app",
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "plugins": [
-      "expo-notifications"
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#ffffff"
+        }
+      ]
     ],
     "extra": {
       "eas": {
         "projectId": "e4791182-d8b2-40a3-a62c-d0f339d34fda"
       }
-    }
+    },
+    "owner": "thilankadilshan"
   }
 }

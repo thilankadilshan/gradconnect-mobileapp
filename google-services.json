@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "786421942028",
+    "project_id": "grads-connect",
+    "storage_bucket": "grads-connect.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786421942028:android:1fff2cc57d8848acdc6b29",
+        "android_client_info": {
+          "package_name": "com.example.webapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnCL3zXQdDxDV0pfPo80XZt5urCGOmJjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:786421942028:android:7b264c9efdb89ee6dc6b29",
+        "android_client_info": {
+          "package_name": "com.gradconnect.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnCL3zXQdDxDV0pfPo80XZt5urCGOmJjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
