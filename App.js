@@ -5,13 +5,15 @@ import {
   Text,
   ActivityIndicator,
   Animated,
-  SafeAreaView,
   Platform,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
+
+// --- NEW PROFESSIONAL SAFE AREA IMPORTS ---
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 // --- CUSTOM SERVICES & HOOKS ---
 import {
@@ -106,47 +108,51 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="dark" backgroundColor="#ffffff" translucent={false} />
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+        <StatusBar style="dark" backgroundColor="#ffffff" translucent={false} />
 
-      <View style={styles.container}>
-        <WebView
-          ref={webViewRef}
-          source={{ uri: "https://gradconnect.world/" }}
-          style={{ flex: 1 }}
-          onLoadEnd={handleWebViewLoadEnd}
-          onMessage={handleMessageFromWebsite}
-          javaScriptEnabled={true}
-          domStorageEnabled={true}
-          onNavigationStateChange={(navState) => {
-            setCanGoBack(navState.canGoBack);
-          }}
-          allowsBackForwardNavigationGestures={true}
-          // --- NATIVE CAPABILITIES ---
-          onPermissionRequest={handleAndroidPermissionRequest}
-          allowsInlineMediaPlayback={true}
-          mediaPlaybackRequiresUserAction={false}
-          // --- NEW GOOGLE LOGIN FIX ---
-          userAgent={customUserAgent}
-        />
+        <View style={styles.container}>
+          <WebView
+            ref={webViewRef}
+            source={{ uri: "https://gradconnect.world/" }}
+            style={{ flex: 1 }}
+            onLoadEnd={handleWebViewLoadEnd}
+            onMessage={handleMessageFromWebsite}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            onNavigationStateChange={(navState) => {
+              setCanGoBack(navState.canGoBack);
+            }}
+            allowsBackForwardNavigationGestures={true}
+            // --- NATIVE CAPABILITIES ---
+            onPermissionRequest={handleAndroidPermissionRequest}
+            allowsInlineMediaPlayback={true}
+            mediaPlaybackRequiresUserAction={false}
+            // --- NEW GOOGLE LOGIN FIX ---
+            userAgent={customUserAgent}
+          />
 
-        {isWebviewLoading && (
-          <Animated.View style={[styles.splashOverlay, { opacity: fadeAnim }]}>
-            <View style={styles.logoContainer}>
-              <Text style={styles.logoText}>
-                Grad<Text style={styles.logoHighlight}>Connect</Text>
-              </Text>
-              <Text style={styles.subtitleText}>Connecting Futures</Text>
-            </View>
-            <ActivityIndicator
-              size="large"
-              color="#007AFF"
-              style={styles.spinner}
-            />
-          </Animated.View>
-        )}
-      </View>
-    </SafeAreaView>
+          {isWebviewLoading && (
+            <Animated.View
+              style={[styles.splashOverlay, { opacity: fadeAnim }]}
+            >
+              <View style={styles.logoContainer}>
+                <Text style={styles.logoText}>
+                  Grad<Text style={styles.logoHighlight}>Connect</Text>
+                </Text>
+                <Text style={styles.subtitleText}>Connecting Futures</Text>
+              </View>
+              <ActivityIndicator
+                size="large"
+                color="#007AFF"
+                style={styles.spinner}
+              />
+            </Animated.View>
+          )}
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
