@@ -10,6 +10,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "androidNavigationBar": {
+      "barStyle": "dark-content",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "bundleIdentifier": "com.gradconnect.app",
       "supportsTablet": true,
@@ -23,6 +27,7 @@
     "android": {
       "package": "com.gradconnect.app",
       "googleServicesFile": "./google-services.json",
+      "softwareKeyboardLayoutMode": "resize",
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",

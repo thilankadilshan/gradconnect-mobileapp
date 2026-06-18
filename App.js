@@ -109,7 +109,11 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      {/* THE FIX: Added "bottom" to edges so it calculates the button bar height */}
+      <SafeAreaView
+        style={styles.safeArea}
+        edges={["top", "left", "right", "bottom"]}
+      >
         <StatusBar style="dark" backgroundColor="#ffffff" translucent={false} />
 
         <View style={styles.container}>
